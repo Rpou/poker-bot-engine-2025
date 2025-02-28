@@ -3,7 +3,7 @@ from poker_game_runner.utils import Range, HandType
 import time
 import random
 
-BOT_NAME = "Python Bot" # Change this to your bot's name
+BOT_NAME = "Doyle Botson" # Change this to your bot's name
 
 class Bot:
   @classmethod
@@ -15,4 +15,21 @@ class Bot:
 
   def act(self, obs: Observation):
     # Your code here
-    return obs.get_max_raise() # All-in
+    return 0;
+
+  def fold_or_check():
+    return 0;
+
+  def call_or_check():
+    return 1;
+
+  def raise_amount(amount):
+    return amount;
+
+  def win_probability(obs: Observation):
+    current_bot_hand = obs.get_board_hand_type()
+
+    current_hand_score = 0;
+
+    if current_bot_hand == HandType.HIGHCARD:
+      current_hand_score + 1;
