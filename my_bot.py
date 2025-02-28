@@ -29,9 +29,22 @@ class Bot:
              winProb += 20
              if obs.my_index == 1 and obs.get_active_players > 4: #bigblind and many players
                 winProb += 20
-         #if current_bot_hand[]     
+         if abs(self.difference) == 1:
+           winProb += 20 
+         if abs(self.difference) == 2:
+           winProb += 8
+         if abs(self.difference) == 3:
+           winProb += 3   
 
-    if pot_odds < winProb:
+    
+    if winProb >= 100:
+       return obs.get_max_raise
+    if winProb >= 80:
+        return obs.get_pot_size * 3
+    elif winProb >= 70:   
+        return obs.get_pot_size * 2
+    
+    if pot_odds <= winProb:
        return 1     
     else:      
         return 0
@@ -49,7 +62,7 @@ class Bot:
     pot_size = obs.get_pot_size  
     call_size = obs.get_call_size  
     try:
-        return call_size / pot_size
+        return call_size / pot_size * 100
     except ZeroDivisionError:  #if nothing is betted potodds always 0
         return 0
     
@@ -89,23 +102,23 @@ class Bot:
     current_hand_score = 0;
 
     if current_bot_hand == HandType.HIGHCARD:
-      current_hand_score + 1;
+      current_hand_score += 0;
     elif current_bot_hand == HandType.PAIR:
-      current_hand_score + 2;
+      current_hand_score += 30;
     elif current_hand_score == HandType.TWOPAIR:
-      current_hand_score + 4;
+      current_hand_score += 65;
     elif current_hand_score == HandType.THREEOFAKIND:
-      current_hand_score + 6;
+      current_hand_score += 70;
     elif current_hand_score == HandType.STRAIGHT:
-      current_hand_score + 8;
+      current_hand_score += 82;
     elif current_hand_score == HandType.FLUSH:
-      current_hand_score + 10;
+      current_hand_score += 85;
     elif current_hand_score == HandType.FULLHOUSE:
-      current_hand_score + 12;
+      current_hand_score += 90;
     elif current_hand_score == HandType.FOUROFAKIND:
-      current_hand_score + 14;
+      current_hand_score += 100;
     elif current_hand_score == HandType.STRAIGHTFLUSH:
-      current_hand_score + 20
+      current_hand_score += 100
     
     my_hand = obs.my_hand
 
@@ -119,9 +132,46 @@ class Bot:
 
         filtered_suits = [suit for suit in suits if suit == card1Rank]
         if len(filtered_suits) >= 2:
-          current_hand_score + 10
+          current_hand_score += 30
+        elif len(filtered_suits) == 1:
+          current_hand_score += 12
       
     return current_hand_score;
+
+
+  def difference(self, obs: Observation):
+    current_bot_hand = obs.my_hand
+    cardOne = -1
+    cardTwo = -1
+    if current_bot_hand[0][0] == 'T':
+      cardOne = 10
+    if current_bot_hand[1][0] == 'T':
+      cardTwo = 10
+    if current_bot_hand[0][0] == 'J':
+      cardOne = 11
+    if current_bot_hand[1][0] == 'J':
+      cardTwo = 11
+    if current_bot_hand[0][0] == 'Q':
+      cardOne = 12
+    if current_bot_hand[1][0] == 'Q':
+      cardTwo = 12
+    if current_bot_hand[0][0] == 'K':
+      cardOne = 13
+    if current_bot_hand[1][0] == 'K':
+      cardTwo = 13
+    if current_bot_hand[0][0] == 'A':
+      cardOne = 14
+    if current_bot_hand[1][0] == 'A':
+      cardTwo = 14
+
+    if cardOne != -1 and cardTwo != -1:
+      return cardTwo-cardOne
+    if cardOne != -1:
+      return current_bot_hand[1][0]-cardOne
+    if cardTwo != -1:
+      return cardTwo - current_bot_hand[0][0]-cardOne 
+    return current_bot_hand[1][0] - current_bot_hand[0][0]
+
       
 
 
