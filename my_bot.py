@@ -27,22 +27,22 @@ class Bot:
          winProb = self.cardValue(current_bot_hand[0][0]) / 2 + self.cardValue(current_bot_hand[1][0]) / 2
          if current_bot_hand[0][1] == current_bot_hand[1][1]:
              winProb += 20
-             if obs.my_index == 1 and obs.get_active_players > 4: #bigblind and many players
+             if obs.my_index == 1 and len(obs.get_active_players()) > 4: #bigblind and many players
                 winProb += 20
-         if abs(self.difference) == 1:
+         if abs(self.difference(obs)) == 1:
            winProb += 20 
-         if abs(self.difference) == 2:
+         if abs(self.difference(obs)) == 2:
            winProb += 8
-         if abs(self.difference) == 3:
-           winProb += 3   
+         if abs(self.difference(obs)) == 3:
+           winProb += 3  
 
     
     if winProb >= 100:
-       return obs.get_max_raise
+       return obs.get_max_raise()
     if winProb >= 80:
-        return obs.get_pot_size * 3
+        return obs.get_pot_size() * 3
     elif winProb >= 70:   
-        return obs.get_pot_size * 2
+        return obs.get_pot_size() * 2
     
     if pot_odds <= winProb:
        return 1     
@@ -55,19 +55,19 @@ class Bot:
   def call_or_check():
     return 1;
 
-  def raise_amount(amount):
+  def raise_amount(self,amount):
     return amount;
 
-  def pot_odds(obs):
-    pot_size = obs.get_pot_size  
-    call_size = obs.get_call_size  
+  def pot_odds(self, obs):
+    pot_size = obs.get_pot_size()  
+    call_size = obs.get_call_size()  
     try:
         return call_size / pot_size * 100
     except ZeroDivisionError:  #if nothing is betted potodds always 0
         return 0
     
 
-  def cardValue(card):
+  def cardValue(self, card):
     match card:
         case "2":
             return 5
@@ -167,10 +167,10 @@ class Bot:
     if cardOne != -1 and cardTwo != -1:
       return cardTwo-cardOne
     if cardOne != -1:
-      return current_bot_hand[1][0]-cardOne
+      return int(current_bot_hand[1][0])-cardOne
     if cardTwo != -1:
-      return cardTwo - current_bot_hand[0][0]-cardOne 
-    return current_bot_hand[1][0] - current_bot_hand[0][0]
+      return cardTwo - int(current_bot_hand[0][0])
+    return int(current_bot_hand[1][0]) - int(current_bot_hand[0][0])
 
       
 
